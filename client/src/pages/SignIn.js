@@ -8,9 +8,6 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import { Grid, Avatar, Paper } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 
 const validationSchema = yup.object({
   email: yup
@@ -40,19 +37,18 @@ const SignIn = () => {
   });
 
   const paperStyle = {
-    padding: 20,
-    height: "70vh",
-    width: 280,
-    margin: "20px auto",
+    padding: 40,
+    height: "30vh",
+    width: "25vh",
+    margin: "60px auto",
   };
   const avatarStyle = { backgroundColor: "#1bbd7e" };
   const btnstyle = { margin: "8px 0" };
 
   return (
     <Grid>
-      <Paper elevation={10} style={paperStyle}>
+      <Paper elevation={5} style={paperStyle}>
         <Grid align="center">
-          <Avatar style={avatarStyle}>{/* <LockOutlinedIcon /> */}</Avatar>
           <Typography variant="h5">Sign In</Typography>
         </Grid>
         <form onSubmit={formik.handleSubmit}>
@@ -88,7 +84,7 @@ const SignIn = () => {
           <br></br>
 
           <Button
-            color="primary"
+            color="secondary"
             variant="contained"
             fullWidth
             type="submit"
