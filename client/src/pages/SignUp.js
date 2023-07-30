@@ -8,19 +8,37 @@ import { InputAdornment, IconButton, Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Grid, Autocomplete, Paper } from "@mui/material";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dob, setDob] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const genderOptions = ["Male", "Female", "Other"];
+
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().required("First name is required"),
+    lastName: Yup.string().required("Last name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    password: Yup.string()
+      .min(5, "Password must be at least 5 characters")
+      .required("Password is required"),
+    dob: Yup.string().required("Last name is required"),
+    gender: Yup.string().required("Last name is required"),
+    confirmPassword: Yup.string().required("Password confirmation is required"),
+  });
+  const handleGenderChange = (event, value) => {
+    setGender(value);
+  };
 
   const handleNext = () => {
     setStep((prevStep) => prevStep + 1);
@@ -65,8 +83,32 @@ const SignUp = () => {
     // You can access all form values from the component state (firstName, lastName, dob, gender, email, password)
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match.");
+    } else {
     }
   };
+  const formik = useFormik({
+    // initialValues: {
+    //   firstName: '',
+    //   lastName: '',
+    //   email: '',
+    //   password: '',
+    //   confirmPassword:'',
+    //   gender:'',
+
+    //   dob: '',
+    // },
+    // validationSchema: validationSchema,
+    onSubmit: (values) => {
+      // Perform the data submission to the server here
+      if (password !== confirmPassword) {
+        setPasswordError("Passwords do not match.");
+      } else {
+        console.log("Form data submitted:", values);
+      }
+
+      // Call your API to send data to the server
+    },
+  });
 
   return (
     <Grid>
@@ -128,14 +170,14 @@ const SignUp = () => {
               <br></br>
               {/* displays 0 needs fix */}
               <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                // value={gender}
-                options={["Male", "Female", "Other"]}
-                // onChange={(e) => setGender(e.target.value)}
-                onChange={(e) => setGender(e.target.value)}
+                id="gender-autocomplete"
+                options={genderOptions}
+                value={gender}
+                onChange={handleGenderChange}
+                getOptionLabel={(option) => option}
+        
                 renderInput={(params) => (
-                  <TextField {...params} value={gender} label="Gender" />
+                  <TextField {...params} label="Gender" variant="outlined" />
                 )}
               />
 

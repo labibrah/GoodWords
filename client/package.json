@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.7.17",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.1",
@@ -12,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "classnames": "^2.3.2",
     "formik": "^2.4.2",
+    "graphql-tag": "^2.12.6",
     "immer": "^10.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

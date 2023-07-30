@@ -6,7 +6,9 @@ import * as yup from "yup";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-
+import { useState } from "react";
+import { gql, useQuery, useApolloClient, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router-dom"; //
 import { Grid, Avatar, Paper } from "@mui/material";
 
 const validationSchema = yup.object({
@@ -20,21 +22,63 @@ const validationSchema = yup.object({
     .required("Password is required"),
 });
 
+const LOGIN_USER = gql`
+  query LoginUser($email: String!, $password: String!) {
+    loginUser(email: $email, password: $password) {
+      id
+      email
+    }
+  }
+`;
 const SignIn = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle sign-up logic here (e.g., send form data to the server)
-  };
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-    },
+  const client = useApolloClient();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const { signIn, loading, error } = useQuery(SIGN_IN);
+  const { loading, error, data, refetch } = useQuery(LOGIN_USER, {
+    variables: { email: "", password: "" },
+    skip: true,
   });
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Handle sign-up logic here (e.g., send form data to the server)
+    const data = new FormData(e.currentTarget);
+    console.log({
+      email: data.get("email"),
+      password: data.get("password"),
+    });
+    let formData = {
+      email: data.get("email"),
+      password: data.get("password"),
+    };
+    try {
+      const { data } = await refetch({
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log("User logged in successfully:", data.loginUser);
+      // console.log("Sign-in successful!", token);
+      // Perform the redirect here (e.g., using React Router)
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Sign-in failed:", error.message);
+    }
+  };
+  // const formik = useFormik({
+  //   initialValues: {
+  //     email: "",
+  //     password: "",
+  //   },
+  //   validationSchema: validationSchema,
+  //   onSubmit: (values) => {
+  //     alert(JSON.stringify(values, null, 2));
+  //   },
+  // });
 
   const paperStyle = {
     padding: 40,
@@ -51,18 +95,14 @@ const SignIn = () => {
         <Grid align="center">
           <Typography variant="h5">Sign In</Typography>
         </Grid>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
             id="outlined-basic"
             variant="outlined"
             name="email"
+            onChange={(e) => setEmail(e.target.value)}
             label="Email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
           />
           <br></br>
           <br></br>
@@ -73,12 +113,8 @@ const SignIn = () => {
             variant="outlined"
             name="password"
             label="Password"
+            onChange={(e) => setPassword(e.target.value)}
             type="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
           />
           <br></br>
           <br></br>
@@ -88,11 +124,13 @@ const SignIn = () => {
             variant="contained"
             fullWidth
             type="submit"
+            disabled={loading}
             style={btnstyle}
             onSubmit={handleSubmit}
           >
             LOGIN
           </Button>
+          {error && <p>Error: {error.message}</p>}
         </form>
         <Typography>
           Don't have an account? <Link to="/signup"> Sign Up </Link>
