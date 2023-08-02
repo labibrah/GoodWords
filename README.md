@@ -18,7 +18,7 @@ Project for Sazim technical
 To clone the repository from GitHub, in the directory you select run the following command:
 
 ```
-git clone https://github.com/emondsarker/GoodWords.git
+git clone https://github.com/labibrah/GoodWords.git
 ```
 
 ## Setup
