@@ -9,7 +9,35 @@ import Typography from "@mui/material/Typography";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Grid, Autocomplete, Paper } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { gql, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router-dom"; //
+
 import * as Yup from "yup";
+
+const SIGN_UP_USER = gql`
+  mutation SignUpUser(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+    $gender: String!
+    $dateOfBirth: String!
+  ) {
+    signUpUser(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+      gender: $gender
+      dateOfBirth: $dateOfBirth
+    ) {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+`;
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
@@ -24,6 +52,7 @@ const SignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const genderOptions = ["Male", "Female", "Other"];
+  const [signUpUser, { data }] = useMutation(SIGN_UP_USER);
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("First name is required"),
@@ -70,20 +99,36 @@ const SignUp = () => {
 
   const paperStyle = {
     padding: 40,
-    height: "30vh",
-    width: "25vh",
+    height: "45vh",
+    width: "30vh",
     margin: "60px auto",
   };
 
   const btnstyle = { margin: "8px 0" };
-
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Submit form data to the server here
+    let formData = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      gender: gender,
+      dateOfBirth: dob,
+    };
     // You can access all form values from the component state (firstName, lastName, dob, gender, email, password)
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match.");
     } else {
+      // const error = apolloError
+      // console.log(JSON.stringify(error, null, 2));
+      // console.log(error instanceof Error);
+      console.log("Form data submitted:", formData);
+      await signUpUser({ variables: { ...formData } });
+      navigate("/dashboard");
+
+      console.log("Form data submitted:", formData);
     }
   };
   const formik = useFormik({
@@ -175,7 +220,6 @@ const SignUp = () => {
                 value={gender}
                 onChange={handleGenderChange}
                 getOptionLabel={(option) => option}
-        
                 renderInput={(params) => (
                   <TextField {...params} label="Gender" variant="outlined" />
                 )}

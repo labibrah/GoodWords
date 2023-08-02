@@ -3,59 +3,59 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-const typeDefs = gql`
-  type User {
-    id: Int!
-    username: String!
-    email: String!
-    password: String!
-    gender: String
-    dateOfBirth: String
-  }
+// const typeDefs = gql`
+//   type User {
+//     id: Int!
+//     username: String!
+//     email: String!
+//     password: String!
+//     gender: String
+//     dateOfBirth: String
+//   }
 
-  type Post {
-    id: Int!
-    title: String!
-    content: String!
-    createdAt: String!
-    updatedAt: String!
-    createdBy: User
-    category: String
-    likeCount: Int!
-    viewCount: Int!
-  }
+//   type Post {
+//     id: Int!
+//     title: String!
+//     content: String!
+//     createdAt: String!
+//     updatedAt: String!
+//     createdBy: User
+//     category: String
+//     likeCount: Int!
+//     viewCount: Int!
+//   }
 
-  type Comment {
-    id: Int!
-    content: String!
-    createdAt: String!
-    updatedAt: String!
-    post: Post
-  }
+//   type Comment {
+//     id: Int!
+//     content: String!
+//     createdAt: String!
+//     updatedAt: String!
+//     post: Post
+//   }
 
-  type Query {
-    posts: [Post!]!
-    users: [User!]!
-    comments: [Comment!]!
-  }
+//   type Query {
+//     posts: [Post!]!
+//     users: [User!]!
+//     comments: [Comment!]!
+//   }
 
-  type Mutation {
-    createPost(
-      title: String!
-      content: String!
-      createdBy: Int!
-      category: String
-    ): Post!
-    createUser(
-      username: String!
-      email: String!
-      password: String!
-      gender: String
-      dateOfBirth: String
-    ): User!
-    createComment(content: String!, postId: Int!): Comment!
-  }
-`;
+//   type Mutation {
+//     createPost(
+//       title: String!
+//       content: String!
+//       createdBy: Int!
+//       category: String
+//     ): Post!
+//     createUser(
+//       username: String!
+//       email: String!
+//       password: String!
+//       gender: String
+//       dateOfBirth: String
+//     ): User!
+//     createComment(content: String!, postId: Int!): Comment!
+//   }
+// `;
 
 const resolvers = {
   Query: {

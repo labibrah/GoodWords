@@ -11,23 +11,25 @@ import {
 } from "@mui/material";
 import { ThumbUp, Comment } from "@mui/icons-material";
 
-const PostCard = () => {
+const PostCard = ({ post }) => {
   return (
     <Card>
       <CardHeader
         avatar={<Avatar src="/broken-image.jpg" />}
-        title="John Doe"
-        subheader="Category"
+        title={post.name}
+        subheader={post.category}
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          This is the content of the post. Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit.
+          {post.content}
         </Typography>
       </CardContent>
       <CardActions>
         <IconButton aria-label="like">
           <ThumbUp />
+          <Typography variant="body2" color="textSecondary" component="p">
+            {post.likes} Likes
+          </Typography>
         </IconButton>
         <IconButton aria-label="comment">
           <Comment />
